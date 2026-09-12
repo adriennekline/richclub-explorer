@@ -8,6 +8,8 @@ authors:
   - family-names: Kline
     given-names: Adrienne
     affiliation: Northwestern University
+  - family-names: Atkinson
+    given-names: Carl
 repository-code: "https://github.com/adriennekline/richclub-explorer"
 url: "https://github.com/adriennekline/richclub-explorer"
 license: BSD-3-Clause
