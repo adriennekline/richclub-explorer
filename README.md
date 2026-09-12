@@ -59,6 +59,11 @@ docker compose down
 Uploaded network files are processed by the container running on your computer and
 are not written to a persistent Docker volume by this configuration.
 
+**New to Docker or the command line?** Follow the complete
+[beginner-friendly Docker guide](docs/getting-started.md) for Windows, macOS, and
+Linux. It includes download-without-Git instructions, a first-analysis walkthrough,
+updates, diagnostics, privacy notes, and troubleshooting.
+
 ## Run locally with Python
 
 ```bash
