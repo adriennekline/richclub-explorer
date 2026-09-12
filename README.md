@@ -135,7 +135,8 @@ threshold-level uncertainty. See [Scientific methods and interpretation](docs/me
 Scientific review, test networks with known behavior, documentation corrections,
 and carefully scoped feature contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md)
 before opening a pull request. Use the repository's **Cite this repository** control
-or [CITATION.cff](CITATION.cff) when referencing the software.
+or [CITATION.cff](CITATION.cff) when referencing the software. A ready-to-copy
+[BibTeX entry](CITATION.bib) is also provided.
 
 ## License
 
