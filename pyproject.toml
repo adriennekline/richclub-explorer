@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "richclub-explorer"
+version = "0.1.0"
+description = "Reproducible rich-club analysis for scientific networks"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "BSD-3-Clause"
+authors = [
+  {name = "Adrienne Kline"}
+]
+keywords = ["network-science", "rich-club", "biological-networks", "connectomics"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: BSD License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering",
+]
+dependencies = [
+  "matplotlib>=3.7",
+  "networkx>=3.2",
+  "numpy>=1.24",
+  "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+app = ["streamlit>=1.37"]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.urls]
+Homepage = "https://github.com/adriennekline/richclub-explorer"
+Repository = "https://github.com/adriennekline/richclub-explorer"
+Issues = "https://github.com/adriennekline/richclub-explorer/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/richclub_explorer"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

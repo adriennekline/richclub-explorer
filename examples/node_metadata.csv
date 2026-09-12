@@ -1,0 +1,9 @@
+node,annotation,group
+gene_A,transcription factor,core
+gene_B,kinase,core
+gene_C,receptor,core
+gene_D,signaling protein,core
+gene_E,transporter,core
+gene_F,enzyme,peripheral
+gene_G,scaffold protein,peripheral
+gene_H,regulatory protein,peripheral

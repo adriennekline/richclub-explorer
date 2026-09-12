@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use RichClub Explorer, please cite the software."
+title: "RichClub Explorer"
+type: software
+version: 0.1.0
+date-released: 2026-09-12
+authors:
+  - family-names: Kline
+    given-names: Adrienne
+    affiliation: Northwestern University
+repository-code: "https://github.com/adriennekline/richclub-explorer"
+url: "https://github.com/adriennekline/richclub-explorer"
+license: BSD-3-Clause
+keywords:
+  - network science
+  - rich-club organization
+  - biological networks
+  - connectomics
