@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">RichClub Explorer interface preview</title>
+  <desc id="desc">A preview of the Streamlit application showing network controls, summary metrics, rich-club curves, and threshold-level results.</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#301C4E" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4E2A84"/>
+      <stop offset="1" stop-color="#6B4A9E"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1440" height="900" fill="#F7F5FA"/>
+  <rect x="0" y="0" width="340" height="900" fill="#EEEAF3"/>
+  <rect x="339" y="0" width="1" height="900" fill="#DDD6E8"/>
+
+  <!-- Sidebar -->
+  <text x="42" y="64" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#29242F">1. Network</text>
+  <text x="42" y="108" font-family="Inter, Arial, sans-serif" font-size="16" fill="#4B4552">Data source</text>
+  <circle cx="54" cy="140" r="9" fill="#4E2A84"/>
+  <circle cx="54" cy="140" r="3" fill="white"/>
+  <text x="76" y="146" font-family="Inter, Arial, sans-serif" font-size="16" fill="#29242F">Example network</text>
+  <circle cx="54" cy="178" r="9" fill="white" stroke="#83778F" stroke-width="2"/>
+  <text x="76" y="184" font-family="Inter, Arial, sans-serif" font-size="16" fill="#29242F">Upload CSV/TSV</text>
+
+  <text x="42" y="232" font-family="Inter, Arial, sans-serif" font-size="16" fill="#4B4552">Uploaded format</text>
+  <rect x="42" y="248" width="256" height="45" rx="7" fill="white" stroke="#C9C1D1"/>
+  <text x="57" y="277" font-family="Inter, Arial, sans-serif" font-size="16" fill="#29242F">Edge list</text>
+  <path d="M273 266 l7 8 l7 -8" fill="none" stroke="#62596B" stroke-width="2"/>
+
+  <text x="42" y="352" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#29242F">2. Analysis</text>
+  <text x="42" y="397" font-family="Inter, Arial, sans-serif" font-size="16" fill="#29242F">Weighted analysis</text>
+  <rect x="244" y="378" width="54" height="30" rx="15" fill="#CFC8D6"/>
+  <circle cx="260" cy="393" r="11" fill="white"/>
+
+  <text x="42" y="445" font-family="Inter, Arial, sans-serif" font-size="16" fill="#4B4552">Richness measure</text>
+  <rect x="42" y="460" width="256" height="45" rx="7" fill="white" stroke="#C9C1D1"/>
+  <text x="57" y="489" font-family="Inter, Arial, sans-serif" font-size="16" fill="#29242F">degree</text>
+
+  <text x="42" y="552" font-family="Inter, Arial, sans-serif" font-size="16" fill="#4B4552">Null networks</text>
+  <line x1="52" y1="582" x2="288" y2="582" stroke="#BDB4C7" stroke-width="5" stroke-linecap="round"/>
+  <line x1="52" y1="582" x2="171" y2="582" stroke="#4E2A84" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="171" cy="582" r="10" fill="#4E2A84"/>
+  <rect x="142" y="603" width="58" height="30" rx="6" fill="white" stroke="#C9C1D1"/>
+  <text x="154" y="624" font-family="Inter, Arial, sans-serif" font-size="14" fill="#29242F">100</text>
+
+  <text x="42" y="675" font-family="Inter, Arial, sans-serif" font-size="16" fill="#4B4552">Random seed</text>
+  <rect x="42" y="690" width="256" height="45" rx="7" fill="white" stroke="#C9C1D1"/>
+  <text x="57" y="719" font-family="Inter, Arial, sans-serif" font-size="16" fill="#29242F">42</text>
+
+  <rect x="42" y="775" width="256" height="54" rx="9" fill="url(#purple)"/>
+  <text x="170" y="808" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="white">Run rich-club analysis</text>
+
+  <!-- Main header -->
+  <text x="396" y="69" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="750" fill="#231F27">RichClub Explorer</text>
+  <text x="396" y="103" font-family="Inter, Arial, sans-serif" font-size="17" fill="#655E6B">Reproducible detection, characterization, and reporting of rich-club organization in scientific networks.</text>
+
+  <!-- Metric cards -->
+  <g filter="url(#shadow)">
+    <rect x="396" y="139" width="174" height="92" rx="10" fill="white"/>
+    <rect x="586" y="139" width="174" height="92" rx="10" fill="white"/>
+    <rect x="776" y="139" width="174" height="92" rx="10" fill="white"/>
+    <rect x="966" y="139" width="174" height="92" rx="10" fill="white"/>
+    <rect x="1156" y="139" width="222" height="92" rx="10" fill="white"/>
+  </g>
+  <g font-family="Inter, Arial, sans-serif">
+    <text x="414" y="169" font-size="14" fill="#746D79">Nodes</text><text x="414" y="207" font-size="28" font-weight="700" fill="#2B2630">34</text>
+    <text x="604" y="169" font-size="14" fill="#746D79">Edges</text><text x="604" y="207" font-size="28" font-weight="700" fill="#2B2630">78</text>
+    <text x="794" y="169" font-size="14" fill="#746D79">Density</text><text x="794" y="207" font-size="28" font-weight="700" fill="#2B2630">0.139</text>
+    <text x="984" y="169" font-size="14" fill="#746D79">Components</text><text x="984" y="207" font-size="28" font-weight="700" fill="#2B2630">1</text>
+    <text x="1174" y="169" font-size="14" fill="#746D79">Null networks</text><text x="1174" y="207" font-size="28" font-weight="700" fill="#2B2630">100</text>
+  </g>
+
+  <rect x="396" y="251" width="982" height="48" rx="8" fill="#FFF6DA" stroke="#E9D693"/>
+  <circle cx="420" cy="275" r="10" fill="#E0A325"/>
+  <text x="420" y="280" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="white">!</text>
+  <text x="442" y="281" font-family="Inter, Arial, sans-serif" font-size="14" fill="#5F4B15">Use 1,000 null networks for final inference; 100 is intended for rapid exploration.</text>
+
+  <!-- Plot card -->
+  <rect x="396" y="320" width="982" height="390" rx="12" fill="white" filter="url(#shadow)"/>
+  <text x="430" y="355" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#2B2630">Rich-club coefficient</text>
+  <text x="1258" y="355" font-family="Inter, Arial, sans-serif" font-size="13" fill="#1F6F78">— Observed</text>
+  <text x="1258" y="378" font-family="Inter, Arial, sans-serif" font-size="13" fill="#6B5B95">— Null mean</text>
+
+  <!-- Upper axes -->
+  <line x1="480" y1="391" x2="1327" y2="391" stroke="#EEEAF1"/>
+  <line x1="480" y1="441" x2="1327" y2="441" stroke="#EEEAF1"/>
+  <line x1="480" y1="491" x2="1327" y2="491" stroke="#EEEAF1"/>
+  <line x1="480" y1="381" x2="480" y2="505" stroke="#958B9E"/>
+  <line x1="480" y1="505" x2="1327" y2="505" stroke="#958B9E"/>
+  <path d="M480 472 C560 465 620 450 690 442 S820 431 890 405 S1010 420 1090 392 S1200 376 1327 365 L1327 401 C1220 410 1150 413 1090 427 S970 444 890 441 S760 464 690 472 S560 490 480 492 Z" fill="#B7A7D2" opacity="0.45"/>
+  <path d="M480 482 C560 475 620 462 690 457 S820 446 890 425 S1010 432 1090 409 S1200 395 1327 384" fill="none" stroke="#6B5B95" stroke-width="3"/>
+  <path d="M480 477 C560 469 620 453 690 448 S820 429 890 412 S1010 419 1090 382 S1200 366 1327 349" fill="none" stroke="#1F6F78" stroke-width="4"/>
+  <text x="462" y="396" text-anchor="end" font-family="Inter, Arial" font-size="11" fill="#776F7E">1.0</text>
+  <text x="462" y="446" text-anchor="end" font-family="Inter, Arial" font-size="11" fill="#776F7E">0.5</text>
+  <text x="462" y="496" text-anchor="end" font-family="Inter, Arial" font-size="11" fill="#776F7E">0.0</text>
+
+  <!-- Lower normalized plot -->
+  <line x1="480" y1="552" x2="1327" y2="552" stroke="#EEEAF1"/>
+  <line x1="480" y1="602" x2="1327" y2="602" stroke="#777" stroke-dasharray="7 6"/>
+  <line x1="480" y1="652" x2="1327" y2="652" stroke="#EEEAF1"/>
+  <line x1="480" y1="537" x2="480" y2="667" stroke="#958B9E"/>
+  <line x1="480" y1="667" x2="1327" y2="667" stroke="#958B9E"/>
+  <path d="M480 611 C560 609 620 604 690 607 S820 597 890 601 S1010 582 1090 575 S1200 558 1327 546" fill="none" stroke="#1F6F78" stroke-width="4"/>
+  <circle cx="1090" cy="575" r="6" fill="#C84A5A"/><circle cx="1198" cy="558" r="6" fill="#C84A5A"/>
+  <text x="462" y="557" text-anchor="end" font-family="Inter, Arial" font-size="11" fill="#776F7E">1.5</text>
+  <text x="462" y="607" text-anchor="end" font-family="Inter, Arial" font-size="11" fill="#776F7E">1.0</text>
+  <text x="462" y="657" text-anchor="end" font-family="Inter, Arial" font-size="11" fill="#776F7E">0.5</text>
+  <text x="875" y="694" text-anchor="middle" font-family="Inter, Arial" font-size="13" fill="#625A69">Degree threshold</text>
+  <text x="417" y="611" text-anchor="middle" transform="rotate(-90 417 611)" font-family="Inter, Arial" font-size="13" fill="#625A69">Normalized coefficient ρ</text>
+
+  <!-- Table preview -->
+  <text x="396" y="768" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#29242F">Threshold-level results</text>
+  <rect x="396" y="791" width="982" height="82" rx="9" fill="white" stroke="#DED8E4"/>
+  <rect x="396" y="791" width="982" height="37" rx="9" fill="#F0ECF4"/>
+  <g font-family="Inter, Arial, sans-serif" font-size="12" fill="#5E5665">
+    <text x="416" y="815">threshold</text><text x="548" y="815">n_rich_nodes</text><text x="690" y="815">φ observed</text>
+    <text x="827" y="815">φ null mean</text><text x="976" y="815">ρ</text><text x="1085" y="815">p empirical</text><text x="1240" y="815">signal</text>
+  </g>
+  <g font-family="Inter, Arial, sans-serif" font-size="13" fill="#2E2932">
+    <text x="430" y="854">8</text><text x="580" y="854">10</text><text x="714" y="854">0.644</text>
+    <text x="850" y="854">0.528</text><text x="976" y="854">1.220</text><text x="1104" y="854">0.020</text><text x="1255" y="854" fill="#2E7D55">●</text>
+  </g>
+</svg>
