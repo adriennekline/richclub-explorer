@@ -63,7 +63,7 @@ with st.sidebar:
     swaps_per_edge = st.slider("Attempted swaps per edge", 1, 25, 10)
     min_rich_nodes = st.slider("Minimum rich nodes", 3, 20, 5)
     seed = st.number_input("Random seed", min_value=0, value=42, step=1)
-    run = st.button("Run rich-club analysis", type="primary", use_container_width=True)
+    run = st.button("Run rich-club analysis", type="primary", width="stretch")
 
 
 if run:
@@ -123,14 +123,14 @@ for warning in result.warnings:
     st.warning(warning)
 
 figure = plot_result(result)
-st.pyplot(figure, use_container_width=True)
+st.pyplot(figure, width="stretch")
 st.caption(
     "A normalized coefficient above one is not sufficient by itself. Interpret it with "
     "the null distribution, retained node count, threshold dependence, and domain context."
 )
 
 st.subheader("Threshold-level results")
-st.dataframe(result.table, use_container_width=True, hide_index=True)
+st.dataframe(result.table, width="stretch", hide_index=True)
 
 eligible = result.table.loc[result.table["reliable_node_count"], "threshold"].tolist()
 if eligible:
@@ -150,22 +150,22 @@ if eligible:
     ).sort_values(["rich_club_member", "richness"], ascending=[False, False])
     edge_table = classify_edges(graph, threshold, richness=result.parameters["richness"])
     left, right = st.columns(2)
-    left.dataframe(node_table, use_container_width=True, hide_index=True)
-    right.dataframe(edge_table, use_container_width=True, hide_index=True)
+    left.dataframe(node_table, width="stretch", hide_index=True)
+    right.dataframe(edge_table, width="stretch", hide_index=True)
 
     left.download_button(
         "Download node membership CSV",
         node_table.to_csv(index=False),
         "richclub_nodes.csv",
         "text/csv",
-        use_container_width=True,
+        width="stretch",
     )
     right.download_button(
         "Download edge classification CSV",
         edge_table.to_csv(index=False),
         "richclub_edges.csv",
         "text/csv",
-        use_container_width=True,
+        width="stretch",
     )
 
 st.subheader("Reproducible export")
@@ -180,21 +180,21 @@ download_cols[0].download_button(
     result.table.to_csv(index=False),
     "richclub_results.csv",
     "text/csv",
-    use_container_width=True,
+    width="stretch",
 )
 download_cols[1].download_button(
     "Download SVG figure",
     image_buffer.getvalue(),
     "richclub_figure.svg",
     "image/svg+xml",
-    use_container_width=True,
+    width="stretch",
 )
 download_cols[2].download_button(
     "Download Methods text",
     methods,
     "richclub_methods.txt",
     "text/plain",
-    use_container_width=True,
+    width="stretch",
 )
 
 st.divider()
