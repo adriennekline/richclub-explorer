@@ -1,0 +1,9 @@
+services:
+  richclub-explorer:
+    build:
+      context: .
+    image: richclub-explorer:local
+    init: true
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
