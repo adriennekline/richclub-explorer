@@ -37,7 +37,29 @@ nodes and edges underlying a result.
 - SVG figures, CSV tables, and editable Methods-text export
 - Seeded, versioned, and testable analysis
 
-## Try the application locally
+## Run locally with Docker
+
+Docker is the simplest option for researchers who do not want to configure a
+Python environment. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/),
+then run:
+
+```bash
+git clone https://github.com/adriennekline/richclub-explorer.git
+cd richclub-explorer
+docker compose up --build
+```
+
+Open [http://localhost:8501](http://localhost:8501) in a browser. Stop the app with
+`Ctrl+C`, followed by:
+
+```bash
+docker compose down
+```
+
+Uploaded network files are processed by the container running on your computer and
+are not written to a persistent Docker volume by this configuration.
+
+## Run locally with Python
 
 ```bash
 git clone https://github.com/adriennekline/richclub-explorer.git
