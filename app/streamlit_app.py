@@ -24,11 +24,6 @@ logo_path = Path(__file__).resolve().parents[1] / "assets" / "node_diagram.png"
 page_icon = str(logo_path) if logo_path.exists() else "🔬"
 st.set_page_config(page_title="RichClub Explorer", page_icon=page_icon, layout="wide")
 
-header_logo_col, _ = st.columns([1, 8])
-with header_logo_col:
-    if logo_path.exists():
-        st.image(str(logo_path), width=120)
-
 st.title("RichClub Explorer")
 st.caption(
     "Reproducible detection, characterization, and reporting of rich-club organization "
@@ -49,6 +44,8 @@ def read_uploaded_graph(uploaded_file, table_format: str, weighted: bool) -> nx.
 
 
 with st.sidebar:
+    if logo_path.exists():
+        st.image(str(logo_path), width=120)
     st.header("1. Network")
     data_source = st.radio("Data source", ["Example network", "Upload CSV/TSV"])
     table_format = st.selectbox("Uploaded format", ["Edge list", "Adjacency matrix"])
