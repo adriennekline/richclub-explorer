@@ -15,7 +15,7 @@ def plot_result(result: RichClubResult) -> Figure:
     table = result.table
     x = table["threshold"].to_numpy()
     reliable = table["reliable_node_count"].to_numpy(dtype=bool)
-    figure, axes = plt.subplots(2, 1, figsize=(8, 7), sharex=True, constrained_layout=True)
+    figure, axes = plt.subplots(2, 1, figsize=(6.2, 4.8), sharex=True, constrained_layout=True)
 
     axes[0].fill_between(
         x,
