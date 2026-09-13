@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="coreFill" x1="170" y1="120" x2="355" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6D28D9"/>
+      <stop offset="1" stop-color="#3B0764"/>
+    </linearGradient>
+    <linearGradient id="peripheralFill" x1="60" y1="60" x2="450" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#D8B4FE"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#2E1065" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .edge-core { stroke:#5B21B6; stroke-width:18; stroke-linecap:round; stroke-linejoin:round; }
+      .edge-peri { stroke:#C084FC; stroke-width:12; stroke-linecap:round; stroke-linejoin:round; }
+      .node-core { fill:url(#coreFill); }
+      .node-peri { fill:url(#peripheralFill); }
+      .node-stroke { stroke:white; stroke-width:8; }
+    </style>
+  </defs>
+
+  <!-- Core edges -->
+  <g filter="url(#softGlow)">
+    <path class="edge-core" d="M208 155 L325 215"/>
+    <path class="edge-core" d="M208 155 L168 303"/>
+    <path class="edge-core" d="M208 155 L286 346"/>
+    <path class="edge-core" d="M325 215 L168 303"/>
+    <path class="edge-core" d="M325 215 L286 346"/>
+    <path class="edge-core" d="M168 303 L286 346"/>
+
+    <!-- Peripheral edges -->
+    <path class="edge-peri" d="M208 155 L121 83"/>
+    <path class="edge-peri" d="M208 155 L306 88"/>
+    <path class="edge-peri" d="M208 155 L206 55"/>
+    <path class="edge-peri" d="M325 215 L431 175"/>
+    <path class="edge-peri" d="M325 215 L408 103"/>
+    <path class="edge-peri" d="M168 303 L69 266"/>
+    <path class="edge-peri" d="M168 303 L98 396"/>
+    <path class="edge-peri" d="M286 346 L381 394"/>
+    <path class="edge-peri" d="M286 346 L245 443"/>
+    <path class="edge-peri" d="M286 346 L330 442"/>
+  </g>
+
+  <!-- Peripheral nodes -->
+  <g filter="url(#softGlow)">
+    <circle class="node-peri node-stroke" cx="121" cy="83" r="31"/>
+    <circle class="node-peri node-stroke" cx="306" cy="88" r="35"/>
+    <circle class="node-peri node-stroke" cx="206" cy="55" r="24"/>
+    <circle class="node-peri node-stroke" cx="431" cy="175" r="29"/>
+    <circle class="node-peri node-stroke" cx="408" cy="103" r="24"/>
+    <circle class="node-peri node-stroke" cx="69" cy="266" r="26"/>
+    <circle class="node-peri node-stroke" cx="98" cy="396" r="32"/>
+    <circle class="node-peri node-stroke" cx="381" cy="394" r="30"/>
+    <circle class="node-peri node-stroke" cx="245" cy="443" r="28"/>
+    <circle class="node-peri node-stroke" cx="330" cy="442" r="22"/>
+  </g>
+
+  <!-- Core nodes -->
+  <g filter="url(#softGlow)">
+    <circle class="node-core node-stroke" cx="208" cy="155" r="42"/>
+    <circle class="node-core node-stroke" cx="325" cy="215" r="40"/>
+    <circle class="node-core node-stroke" cx="168" cy="303" r="44"/>
+    <circle class="node-core node-stroke" cx="286" cy="346" r="40"/>
+  </g>
+</svg>
