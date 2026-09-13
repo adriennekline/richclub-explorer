@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import json
 from datetime import datetime, timezone
 from io import BytesIO
@@ -27,7 +28,19 @@ logo_path = Path(__file__).resolve().parents[1] / "assets" / "richclub_explorer_
 page_icon = str(logo_path) if logo_path.exists() else "🔬"
 st.set_page_config(page_title="RichClub Explorer", page_icon=page_icon, layout="wide")
 
-st.title("RichClub Explorer")
+if logo_path.exists():
+    logo_b64 = base64.b64encode(logo_path.read_bytes()).decode("ascii")
+    st.markdown(
+        f"""
+        <div style="display:flex; align-items:center; gap:0.55rem; margin:0 0 0.3rem 0;">
+            <img src="data:image/svg+xml;base64,{logo_b64}" alt="RichClub Explorer icon" style="width:48px; height:48px; display:block;" />
+            <h1 style="margin:0; padding:0; line-height:1.06;">RichClub Explorer</h1>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+else:
+    st.title("RichClub Explorer")
 st.caption(
     "Reproducible detection, characterization, and reporting of rich-club organization "
     "in scientific networks."
@@ -45,18 +58,19 @@ st.markdown(
         padding: 0.2rem 0 0 0 !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        overflow: visible !important;
     }
     .stTabs [data-baseweb="tab"],
     .stTabs button[role="tab"],
     .stTabs [data-testid="stTab"],
     [data-testid="stTab"][role="tab"] {
         position: relative !important;
-        top: 1px !important;
+        top: 0 !important;
         height: auto !important;
         font-size: 1.04rem !important;
         font-weight: 700 !important;
         line-height: 1.2 !important;
-        padding: 0.62rem 1rem 0.58rem 1rem !important;
+        padding: 0.58rem 0.75rem 0.54rem 0.75rem !important;
         border: 1px solid #d4d4d8 !important;
         border-bottom: 0 !important;
         border-radius: 0.62rem 0.62rem 0 0 !important;
@@ -65,6 +79,9 @@ st.markdown(
         opacity: 1 !important;
         box-shadow: none !important;
         transition: background 140ms ease, color 140ms ease, border-color 140ms ease !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        justify-content: center !important;
     }
     .stTabs [data-baseweb="tab"] p,
     .stTabs button[role="tab"] p,
@@ -117,6 +134,10 @@ st.markdown(
         display: none !important;
         height: 0 !important;
     }
+    .stTabs [data-testid="stTabsScrollRight"],
+    .stTabs [data-testid="stTabsScrollLeft"] {
+        display: none !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -150,10 +171,9 @@ def settings_json(data: dict[str, Any]) -> str:
 
 
 with st.sidebar:
-    if logo_path.exists():
-        st.image(str(logo_path), width=120)
+    st.header("Analysis Control Panel")
     with st.form("analysis_controls"):
-        st.header("1. Network")
+        st.subheader("Data Input")
         data_source = st.radio("Data source", ["Example network", "Upload CSV/TSV"])
         table_format = st.selectbox("Uploaded format", ["Edge list", "Adjacency matrix"])
         uploaded = None
@@ -161,7 +181,7 @@ with st.sidebar:
             uploaded = st.file_uploader("Choose a network table", type=["csv", "tsv", "txt"])
             st.caption("Edge lists require `source` and `target`; `weight` is optional.")
 
-        st.header("2. Analysis")
+        st.subheader("Analysis Parameters")
         weighted = st.checkbox("Weighted analysis", value=False)
         richness = st.selectbox(
             "Richness measure",
