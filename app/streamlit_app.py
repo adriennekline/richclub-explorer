@@ -189,10 +189,41 @@ with st.sidebar:
         min_rich_nodes = st.slider("Minimum rich nodes", 3, 20, 5)
         seed = st.number_input("Random seed", min_value=0, value=42, step=1)
         st.subheader("Plot Appearance")
-        observed_color = st.color_picker("Observed and rho", "#1F6F78")
-        signal_color = st.color_picker("Exploratory signal", "#C84A5A")
-        null_mean_color = st.color_picker("Null mean", "#6B5B95")
-        null_envelope_color = st.color_picker("Null envelope", "#B7A7D2")
+        row_observed_label, row_observed_picker = st.columns([3, 2], vertical_alignment="center")
+        row_observed_label.markdown("Observed and rho")
+        observed_color = row_observed_picker.color_picker(
+            "Observed and rho color",
+            "#1F6F78",
+            key="observed_color_picker",
+            label_visibility="collapsed",
+        )
+
+        row_signal_label, row_signal_picker = st.columns([3, 2], vertical_alignment="center")
+        row_signal_label.markdown("Exploratory signal")
+        signal_color = row_signal_picker.color_picker(
+            "Exploratory signal color",
+            "#C84A5A",
+            key="signal_color_picker",
+            label_visibility="collapsed",
+        )
+
+        row_null_mean_label, row_null_mean_picker = st.columns([3, 2], vertical_alignment="center")
+        row_null_mean_label.markdown("Null mean")
+        null_mean_color = row_null_mean_picker.color_picker(
+            "Null mean color",
+            "#6B5B95",
+            key="null_mean_color_picker",
+            label_visibility="collapsed",
+        )
+
+        row_null_env_label, row_null_env_picker = st.columns([3, 2], vertical_alignment="center")
+        row_null_env_label.markdown("Null envelope")
+        null_envelope_color = row_null_env_picker.color_picker(
+            "Null envelope color",
+            "#B7A7D2",
+            key="null_envelope_color_picker",
+            label_visibility="collapsed",
+        )
 
         run_disabled = data_source == "Upload CSV/TSV" and uploaded is None
         if run_disabled:
