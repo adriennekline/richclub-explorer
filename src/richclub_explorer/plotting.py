@@ -15,7 +15,11 @@ def plot_result(result: RichClubResult) -> Figure:
     table = result.table
     x = table["threshold"].to_numpy()
     reliable = table["reliable_node_count"].to_numpy(dtype=bool)
-    figure, axes = plt.subplots(1, 2, figsize=(8.0, 3.4), constrained_layout=True)
+    n_thresholds = len(x)
+    # Scale figure size with threshold count so dense results stay readable.
+    width = float(np.clip(8.2 + 0.1 * max(0, n_thresholds - 10), 8.2, 12.8))
+    height = float(np.clip(3.1 + 0.015 * max(0, n_thresholds - 20), 3.1, 4.0))
+    figure, axes = plt.subplots(1, 2, figsize=(width, height), constrained_layout=True)
 
     axes[0].fill_between(
         x,

@@ -307,7 +307,7 @@ with tab_results:
         )
 
     figure = plot_result(result)
-    st.pyplot(figure, width="content")
+    st.pyplot(figure, width="stretch")
     st.caption(
         "A normalized coefficient above one is not sufficient by itself. Interpret it with "
         "the null distribution, retained node count, threshold dependence, and domain context."
