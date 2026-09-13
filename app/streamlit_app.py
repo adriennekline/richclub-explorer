@@ -23,7 +23,7 @@ from richclub_explorer.plotting import plot_result
 from richclub_explorer.reporting import methods_paragraph
 from richclub_explorer.validation import NetworkValidationError, validate_network
 
-logo_path = Path(__file__).resolve().parents[1] / "assets" / "node_diagram.png"
+logo_path = Path(__file__).resolve().parents[1] / "assets" / "richclub_explorer_icon.svg"
 page_icon = str(logo_path) if logo_path.exists() else "🔬"
 st.set_page_config(page_title="RichClub Explorer", page_icon=page_icon, layout="wide")
 
