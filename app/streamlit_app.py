@@ -131,7 +131,7 @@ for warning in result.warnings:
     st.warning(warning)
 
 figure = plot_result(result)
-st.pyplot(figure, width="stretch")
+st.pyplot(figure, width="content")
 st.caption(
     "A normalized coefficient above one is not sufficient by itself. Interpret it with "
     "the null distribution, retained node count, threshold dependence, and domain context."
