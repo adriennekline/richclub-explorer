@@ -16,6 +16,7 @@ RUN python -m pip install --upgrade pip && \
     python -m pip install ".[app]"
 
 COPY app ./app
+COPY assets ./assets
 COPY .streamlit ./.streamlit
 
 USER app
