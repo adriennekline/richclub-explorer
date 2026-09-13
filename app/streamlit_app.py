@@ -189,12 +189,10 @@ with st.sidebar:
         min_rich_nodes = st.slider("Minimum rich nodes", 3, 20, 5)
         seed = st.number_input("Random seed", min_value=0, value=42, step=1)
         st.subheader("Plot Appearance")
-        color_cols = st.columns(2)
-        observed_color = color_cols[0].color_picker("Observed and rho", "#1F6F78")
-        signal_color = color_cols[1].color_picker("Exploratory signal", "#C84A5A")
-        null_cols = st.columns(2)
-        null_mean_color = null_cols[0].color_picker("Null mean", "#6B5B95")
-        null_envelope_color = null_cols[1].color_picker("Null envelope", "#B7A7D2")
+        observed_color = st.color_picker("Observed and rho", "#1F6F78")
+        signal_color = st.color_picker("Exploratory signal", "#C84A5A")
+        null_mean_color = st.color_picker("Null mean", "#6B5B95")
+        null_envelope_color = st.color_picker("Null envelope", "#B7A7D2")
 
         run_disabled = data_source == "Upload CSV/TSV" and uploaded is None
         if run_disabled:
@@ -305,7 +303,13 @@ with tab_results:
     cols[4].metric("Null networks", result.parameters["n_random"])
 
     for warning in result.warnings:
-        st.warning(warning)
+        if "Fewer than 1,000 null networks were used." in warning:
+            st.warning(
+                "For final inference, increase Null networks to 1,000 in the left "
+                "Analysis Control Panel under Analysis Parameters, then rerun."
+            )
+        else:
+            st.warning(warning)
     if summary["components"] > 1:
         st.info(
             "This network has multiple connected components. Rich-club interpretation may "
