@@ -8,9 +8,11 @@ from io import BytesIO
 from pathlib import Path
 from typing import Any
 
+import matplotlib.pyplot as plt
 import networkx as nx
 import pandas as pd
 import streamlit as st
+from matplotlib.lines import Line2D
 
 from richclub_explorer import (
     analyze,
@@ -52,6 +54,7 @@ st.markdown(
     .stTabs div[role="tablist"],
     div[role="tablist"] {
         gap: 0.45rem !important;
+        flex-wrap: wrap !important;
         background: transparent !important;
         border-bottom: 0 !important;
         padding: 0.2rem 0 0 0 !important;
@@ -137,6 +140,26 @@ st.markdown(
     .stTabs [data-testid="stTabsScrollLeft"] {
         display: none !important;
     }
+    div[data-testid="stDownloadButton"] > button {
+        background: #8b5cf6 !important;
+        border: 1px solid #7c3aed !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        border-radius: 0.6rem !important;
+        box-shadow: 0 2px 10px rgba(124, 58, 237, 0.22) !important;
+        transition: background 140ms ease, border-color 140ms ease, transform 120ms ease !important;
+    }
+    div[data-testid="stDownloadButton"] > button:hover {
+        background: #7c3aed !important;
+        border-color: #6d28d9 !important;
+        transform: translateY(-1px);
+    }
+    div[data-testid="stDownloadButton"] > button:focus,
+    div[data-testid="stDownloadButton"] > button:focus-visible {
+        outline: 2px solid #c4b5fd !important;
+        outline-offset: 1px !important;
+        box-shadow: 0 0 0 3px rgba(196, 181, 253, 0.35) !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -167,6 +190,155 @@ def to_csv_string(frame: pd.DataFrame) -> str:
 
 def settings_json(data: dict[str, Any]) -> str:
     return json.dumps(data, indent=2, sort_keys=True)
+
+
+def network_figure(
+    graph: nx.Graph,
+    *,
+    threshold: float | None,
+    richness: str,
+    layout: str,
+    node_size: int,
+    show_labels: bool,
+    seed: int,
+) -> Any:
+    used_kamada_fallback = False
+    if layout == "Kamada-Kawai":
+        try:
+            positions = nx.kamada_kawai_layout(graph)
+        except ModuleNotFoundError:
+            positions = nx.spring_layout(graph, seed=seed)
+            used_kamada_fallback = True
+    elif layout == "Circular":
+        positions = nx.circular_layout(graph)
+    else:
+        positions = nx.spring_layout(graph, seed=seed)
+
+    figure, axis = plt.subplots(figsize=(5.6, 3.6), constrained_layout=True)
+    nodes = list(graph.nodes())
+
+    if threshold is None:
+        nx.draw_networkx_edges(
+            graph,
+            positions,
+            ax=axis,
+            edge_color="#94a3b8",
+            width=1.2,
+            alpha=0.62,
+        )
+        nx.draw_networkx_nodes(
+            graph,
+            positions,
+            nodelist=nodes,
+            ax=axis,
+            node_size=node_size,
+            node_color="#1F6F78",
+            edgecolors="#0f172a",
+            linewidths=0.65,
+            alpha=0.95,
+        )
+        legend_handles = [
+            Line2D([0], [0], marker="o", color="none", markerfacecolor="#1F6F78", markeredgecolor="#0f172a", markersize=8, label="Node"),
+            Line2D([0], [0], color="#94a3b8", lw=2, label="Edge"),
+        ]
+        title = "Network structure"
+    else:
+        members = set(rich_nodes(graph, threshold, richness=richness))
+        edge_roles = classify_edges(graph, threshold, richness=richness)
+        role_lookup = {
+            tuple(sorted((row["source"], row["target"]))): row["edge_class"]
+            for _, row in edge_roles.iterrows()
+        }
+        rich_edges: list[tuple[Any, Any]] = []
+        feeder_edges: list[tuple[Any, Any]] = []
+        local_edges: list[tuple[Any, Any]] = []
+        for edge in graph.edges():
+            role = role_lookup.get(tuple(sorted(edge)))
+            if role == "rich-club":
+                rich_edges.append(edge)
+            elif role == "feeder":
+                feeder_edges.append(edge)
+            else:
+                local_edges.append(edge)
+
+        nx.draw_networkx_edges(
+            graph,
+            positions,
+            ax=axis,
+            edgelist=local_edges,
+            edge_color="#cbd5e1",
+            width=1.0,
+            alpha=0.75,
+        )
+        nx.draw_networkx_edges(
+            graph,
+            positions,
+            ax=axis,
+            edgelist=feeder_edges,
+            edge_color="#7c3aed",
+            width=1.6,
+            alpha=0.8,
+        )
+        nx.draw_networkx_edges(
+            graph,
+            positions,
+            ax=axis,
+            edgelist=rich_edges,
+            edge_color="#e11d48",
+            width=2.2,
+            alpha=0.92,
+        )
+
+        non_members = [node for node in nodes if node not in members]
+        member_nodes = [node for node in nodes if node in members]
+        nx.draw_networkx_nodes(
+            graph,
+            positions,
+            nodelist=non_members,
+            ax=axis,
+            node_size=node_size,
+            node_color="#dbeafe",
+            edgecolors="#64748b",
+            linewidths=0.7,
+            alpha=0.95,
+        )
+        nx.draw_networkx_nodes(
+            graph,
+            positions,
+            nodelist=member_nodes,
+            ax=axis,
+            node_size=node_size,
+            node_color="#f97316",
+            edgecolors="#7c2d12",
+            linewidths=0.85,
+            alpha=0.98,
+        )
+
+        legend_handles = [
+            Line2D([0], [0], marker="o", color="none", markerfacecolor="#f97316", markeredgecolor="#7c2d12", markersize=8, label="Rich-club member"),
+            Line2D([0], [0], marker="o", color="none", markerfacecolor="#dbeafe", markeredgecolor="#64748b", markersize=8, label="Non-member"),
+            Line2D([0], [0], color="#e11d48", lw=2.4, label="Rich-club edge"),
+            Line2D([0], [0], color="#7c3aed", lw=2.0, label="Feeder edge"),
+            Line2D([0], [0], color="#cbd5e1", lw=1.8, label="Local edge"),
+        ]
+        title = f"Network view at {richness} threshold > {threshold:g}"
+
+    if show_labels:
+        nx.draw_networkx_labels(graph, positions, font_size=7, ax=axis, font_color="#0f172a")
+
+    if used_kamada_fallback:
+        title = f"{title} (Spring fallback: scipy not installed)"
+
+    axis.set_title(title)
+    axis.set_axis_off()
+    axis.legend(
+        handles=legend_handles,
+        loc="upper left",
+        bbox_to_anchor=(1.02, 1.0),
+        borderaxespad=0.0,
+        frameon=False,
+    )
+    return figure
 
 
 with st.sidebar:
@@ -340,8 +512,14 @@ st.caption(
     f"Last run (UTC): {context.get('run_at_utc', 'unknown')} · Source: {source_label}"
 )
 
-tab_results, tab_membership, tab_export = st.tabs(
-    ["Results", "Membership & Roles", "Reproducible Export"]
+tab_results, tab_membership, tab_graph_nodes, tab_network, tab_export = st.tabs(
+    [
+        "Results",
+        "Membership & Roles",
+        "Graph Nodes",
+        "Network Visualization",
+        "Reproducible Export",
+    ]
 )
 
 with tab_results:
@@ -428,6 +606,109 @@ with tab_membership:
             "No thresholds met the reliability criterion for membership reporting. "
             "Try lowering minimum rich nodes or using a denser network."
         )
+
+with tab_graph_nodes:
+    st.markdown(
+        "### <i class='fa-solid fa-circle-nodes section-icon'></i>Graph nodes",
+        unsafe_allow_html=True,
+    )
+    node_richness_weight = "weight" if result.parameters["richness"] == "strength" else None
+    node_frame = pd.DataFrame(
+        [
+            {
+                "node": node,
+                "richness": float(graph.degree(node, weight=node_richness_weight)),
+                "degree": int(graph.degree(node)),
+            }
+            for node in graph.nodes
+        ]
+    )
+
+    reliable_thresholds = result.table.loc[
+        result.table["reliable_node_count"], "threshold"
+    ].tolist()
+    if reliable_thresholds:
+        node_threshold = st.selectbox(
+            "Highlight rich-club membership at threshold",
+            reliable_thresholds,
+            index=max(0, len(reliable_thresholds) // 2),
+        )
+        highlighted_members = set(
+            rich_nodes(graph, node_threshold, richness=result.parameters["richness"])
+        )
+        node_frame["rich_club_member"] = node_frame["node"].isin(highlighted_members)
+        node_frame = node_frame.sort_values(
+            ["rich_club_member", "richness"], ascending=[False, False]
+        )
+    else:
+        st.info(
+            "No thresholds met the reliability criterion, so membership highlighting is unavailable."
+        )
+        node_frame["rich_club_member"] = False
+        node_frame = node_frame.sort_values(["richness"], ascending=[False])
+
+    st.dataframe(node_frame, width="stretch", hide_index=True)
+    st.download_button(
+        "Download graph nodes CSV",
+        to_csv_string(node_frame),
+        "graph_nodes.csv",
+        "text/csv",
+        width="stretch",
+    )
+
+with tab_network:
+    st.markdown(
+        "### <i class='fa-solid fa-circle-nodes section-icon'></i>Network visualization",
+        unsafe_allow_html=True,
+    )
+    layout_name = st.selectbox("Layout", ["Spring", "Kamada-Kawai", "Circular"], index=0)
+    node_size = st.slider("Node size", 80, 700, 250, 10)
+    show_labels = st.checkbox(
+        "Show node labels",
+        value=graph.number_of_nodes() <= 50,
+        help="Disable labels for larger graphs to keep the figure readable.",
+    )
+    highlight_roles = st.checkbox(
+        "Highlight rich-club membership and edge roles",
+        value=True,
+    )
+
+    network_threshold: float | None = None
+    if highlight_roles:
+        reliable_thresholds = result.table.loc[
+            result.table["reliable_node_count"], "threshold"
+        ].tolist()
+        if reliable_thresholds:
+            network_threshold = st.selectbox(
+                "Threshold for highlighting",
+                reliable_thresholds,
+                index=max(0, len(reliable_thresholds) // 2),
+            )
+        else:
+            st.info(
+                "No thresholds met the reliability criterion. Showing the network without role highlighting."
+            )
+
+    network_plot = network_figure(
+        graph,
+        threshold=network_threshold,
+        richness=str(result.parameters["richness"]),
+        layout=layout_name,
+        node_size=node_size,
+        show_labels=show_labels,
+        seed=int(result.parameters.get("seed", 42)),
+    )
+    st.pyplot(network_plot, width="content")
+    st.caption(
+        "Use role highlighting to see how rich-club members and rich/feeder/local edges change across thresholds."
+    )
+    st.download_button(
+        "Download network SVG",
+        result_figure_svg(network_plot),
+        "richclub_network.svg",
+        "image/svg+xml",
+        width="stretch",
+    )
 
 with tab_export:
     st.markdown(
