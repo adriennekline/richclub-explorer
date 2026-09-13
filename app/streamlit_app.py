@@ -41,9 +41,10 @@ st.markdown(
     div[role="tablist"] {
         gap: 0.45rem !important;
         background: transparent !important;
-        border-bottom: 2px solid #d4d4d8 !important;
+        border-bottom: 0 !important;
         padding: 0.2rem 0 0 0 !important;
         border-radius: 0 !important;
+        box-shadow: none !important;
     }
     .stTabs [data-baseweb="tab"],
     .stTabs button[role="tab"],
@@ -111,7 +112,9 @@ st.markdown(
         padding: 1rem 0.9rem 0.8rem 0.9rem !important;
         background: #ffffff !important;
     }
-    .stTabs [data-baseweb="tab-highlight"] {
+    .stTabs [data-baseweb="tab-highlight"],
+    .stTabs [data-testid="stTabsTabHighlight"] {
+        display: none !important;
         height: 0 !important;
     }
     </style>
