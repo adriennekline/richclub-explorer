@@ -9,7 +9,15 @@ from matplotlib.figure import Figure
 from .analysis import RichClubResult
 
 
-def plot_result(result: RichClubResult) -> Figure:
+def plot_result(
+    result: RichClubResult,
+    *,
+    null_envelope_color: str = "#B7A7D2",
+    null_mean_color: str = "#6B5B95",
+    observed_color: str = "#1F6F78",
+    signal_color: str = "#C84A5A",
+    reference_line_color: str = "#666666",
+) -> Figure:
     """Plot observed/null coefficients and normalized rich-club values."""
 
     table = result.table
@@ -25,20 +33,20 @@ def plot_result(result: RichClubResult) -> Figure:
         x,
         table["phi_null_lower_95"],
         table["phi_null_upper_95"],
-        color="#B7A7D2",
+        color=null_envelope_color,
         alpha=0.45,
         label="95% null envelope",
     )
-    axes[0].plot(x, table["phi_null_mean"], color="#6B5B95", label="Null mean")
-    axes[0].plot(x, table["phi_observed"], color="#1F6F78", linewidth=2.2, label="Observed")
+    axes[0].plot(x, table["phi_null_mean"], color=null_mean_color, label="Null mean")
+    axes[0].plot(x, table["phi_observed"], color=observed_color, linewidth=2.2, label="Observed")
     axes[0].set_xlabel(f"{str(result.parameters['richness']).capitalize()} threshold")
     axes[0].set_ylabel("Rich-club coefficient")
     axes[0].legend(frameon=False)
 
-    axes[1].axhline(1.0, color="#666666", linestyle="--", linewidth=1)
-    axes[1].plot(x, table["rho"], color="#1F6F78", linewidth=2.2)
+    axes[1].axhline(1.0, color=reference_line_color, linestyle="--", linewidth=1)
+    axes[1].plot(x, table["rho"], color=observed_color, linewidth=2.2)
     signal = table["exploratory_signal"].to_numpy(dtype=bool)
-    axes[1].scatter(x[signal], table.loc[signal, "rho"], color="#C84A5A", label="Exploratory signal")
+    axes[1].scatter(x[signal], table.loc[signal, "rho"], color=signal_color, label="Exploratory signal")
     if np.any(~reliable):
         axes[1].scatter(
             x[~reliable],

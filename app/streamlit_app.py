@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import base64
 import json
 from datetime import datetime, timezone
 from io import BytesIO
@@ -29,16 +28,9 @@ page_icon = str(logo_path) if logo_path.exists() else "🔬"
 st.set_page_config(page_title="RichClub Explorer", page_icon=page_icon, layout="wide")
 
 if logo_path.exists():
-    logo_b64 = base64.b64encode(logo_path.read_bytes()).decode("ascii")
-    st.markdown(
-        f"""
-        <div style="display:flex; align-items:center; gap:0.55rem; margin:0 0 0.3rem 0;">
-            <img src="data:image/svg+xml;base64,{logo_b64}" alt="RichClub Explorer icon" style="width:48px; height:48px; display:block;" />
-            <h1 style="margin:0; padding:0; line-height:1.06;">RichClub Explorer</h1>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    title_col_icon, title_col_text = st.columns([0.08, 0.92], gap="small", vertical_alignment="center")
+    title_col_icon.image(str(logo_path), width=46)
+    title_col_text.title("RichClub Explorer")
 else:
     st.title("RichClub Explorer")
 st.caption(
@@ -196,6 +188,13 @@ with st.sidebar:
         swaps_per_edge = st.slider("Attempted swaps per edge", 1, 25, 10)
         min_rich_nodes = st.slider("Minimum rich nodes", 3, 20, 5)
         seed = st.number_input("Random seed", min_value=0, value=42, step=1)
+        st.subheader("Plot Appearance")
+        color_cols = st.columns(2)
+        observed_color = color_cols[0].color_picker("Observed and rho", "#1F6F78")
+        signal_color = color_cols[1].color_picker("Exploratory signal", "#C84A5A")
+        null_cols = st.columns(2)
+        null_mean_color = null_cols[0].color_picker("Null mean", "#6B5B95")
+        null_envelope_color = null_cols[1].color_picker("Null envelope", "#B7A7D2")
 
         run_disabled = data_source == "Upload CSV/TSV" and uploaded is None
         if run_disabled:
@@ -248,6 +247,12 @@ if run:
                 "min_rich_nodes": min_rich_nodes,
                 "seed": int(seed),
             },
+            "plot_colors": {
+                "observed_color": observed_color,
+                "signal_color": signal_color,
+                "null_mean_color": null_mean_color,
+                "null_envelope_color": null_envelope_color,
+            },
         }
     except (ValueError, NetworkValidationError) as exc:
         st.error(str(exc))
@@ -277,6 +282,7 @@ result = st.session_state["analysis_result"]
 graph = st.session_state["analysis_graph"]
 context = st.session_state.get("analysis_context", {})
 summary = validate_network(graph, weighted=bool(result.parameters["weighted"])).summary
+plot_colors = context.get("plot_colors", {})
 
 source_label = context.get("data_source", "Unknown")
 if source_label == "Upload CSV/TSV" and context.get("uploaded_file"):
@@ -306,7 +312,13 @@ with tab_results:
             "depend on whether disconnected regions are scientifically meaningful."
         )
 
-    figure = plot_result(result)
+    figure = plot_result(
+        result,
+        observed_color=plot_colors.get("observed_color", "#1F6F78"),
+        signal_color=plot_colors.get("signal_color", "#C84A5A"),
+        null_mean_color=plot_colors.get("null_mean_color", "#6B5B95"),
+        null_envelope_color=plot_colors.get("null_envelope_color", "#B7A7D2"),
+    )
     st.pyplot(figure, width="stretch")
     st.caption(
         "A normalized coefficient above one is not sufficient by itself. Interpret it with "
@@ -380,7 +392,15 @@ with tab_export:
     )
     download_cols[1].download_button(
         "Download SVG figure",
-        result_figure_svg(plot_result(result)),
+        result_figure_svg(
+            plot_result(
+                result,
+                observed_color=plot_colors.get("observed_color", "#1F6F78"),
+                signal_color=plot_colors.get("signal_color", "#C84A5A"),
+                null_mean_color=plot_colors.get("null_mean_color", "#6B5B95"),
+                null_envelope_color=plot_colors.get("null_envelope_color", "#B7A7D2"),
+            )
+        ),
         "richclub_figure.svg",
         "image/svg+xml",
         width="stretch",
