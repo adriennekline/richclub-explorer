@@ -26,6 +26,7 @@ from richclub_explorer.reporting import methods_paragraph
 from richclub_explorer.validation import NetworkValidationError, validate_network
 
 logo_path = Path(__file__).resolve().parents[1] / "assets" / "richclub_explorer_icon.svg"
+ui_mainpage_path = Path(__file__).resolve().parents[1] / "assets" / "UI_mainpage.png"
 page_icon = str(logo_path) if logo_path.exists() else "🔬"
 st.set_page_config(page_title="RichClub Explorer", page_icon=page_icon, layout="wide")
 
@@ -39,6 +40,13 @@ st.caption(
     "Reproducible detection, characterization, and reporting of rich-club organization "
     "in scientific networks."
 )
+
+if ui_mainpage_path.exists():
+    st.image(
+        str(ui_mainpage_path),
+        caption="RichClub Explorer main page",
+        use_container_width=True,
+    )
 
 st.markdown(
     """

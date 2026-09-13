@@ -12,7 +12,9 @@ for researchers who do not routinely write code.
 > the primary validated path in v0.1. Weighted inference is provided for exploration
 > and carries an explicit null-model limitation.
 
-![RichClub Explorer interface showing analysis settings, summary metrics, rich-club curves, and threshold-level results](assets/UI_example.png)
+![RichClub Explorer main page showing analysis controls and results workspace](assets/UI_mainpage.png)
+
+![RichClub Explorer graph viewer highlighting network structure and rich-club roles](assets/Graph_viewer.png)
 
 ## Why this project exists
 
