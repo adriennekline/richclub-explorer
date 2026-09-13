@@ -28,8 +28,8 @@ page_icon = str(logo_path) if logo_path.exists() else "🔬"
 st.set_page_config(page_title="RichClub Explorer", page_icon=page_icon, layout="wide")
 
 if logo_path.exists():
-    title_col_icon, title_col_text = st.columns([0.08, 0.92], gap="small", vertical_alignment="center")
-    title_col_icon.image(str(logo_path), width=46)
+    title_col_icon, title_col_text = st.columns([0.04, 0.96], gap="small", vertical_alignment="center")
+    title_col_icon.image(str(logo_path), width=62)
     title_col_text.title("RichClub Explorer")
 else:
     st.title("RichClub Explorer")
@@ -40,7 +40,14 @@ st.caption(
 
 st.markdown(
     """
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
     <style>
+    .section-icon {
+        margin-right: 0.45rem;
+    }
     .stTabs [data-baseweb="tab-list"],
     .stTabs div[role="tablist"],
     div[role="tablist"] {
@@ -163,9 +170,15 @@ def settings_json(data: dict[str, Any]) -> str:
 
 
 with st.sidebar:
-    st.header("Analysis Control Panel")
+    st.markdown(
+        "## <i class='fa-solid fa-sliders section-icon'></i>Analysis Control Panel",
+        unsafe_allow_html=True,
+    )
     with st.form("analysis_controls"):
-        st.subheader("Data Input")
+        st.markdown(
+            "### <i class='fa-solid fa-database section-icon'></i>Data Input",
+            unsafe_allow_html=True,
+        )
         data_source = st.radio("Data source", ["Example network", "Upload CSV/TSV"])
         table_format = st.selectbox("Uploaded format", ["Edge list", "Adjacency matrix"])
         uploaded = None
@@ -173,7 +186,10 @@ with st.sidebar:
             uploaded = st.file_uploader("Choose a network table", type=["csv", "tsv", "txt"])
             st.caption("Edge lists require `source` and `target`; `weight` is optional.")
 
-        st.subheader("Analysis Parameters")
+        st.markdown(
+            "### <i class='fa-solid fa-chart-line section-icon'></i>Analysis Parameters",
+            unsafe_allow_html=True,
+        )
         weighted = st.checkbox("Weighted analysis", value=False)
         richness = st.selectbox(
             "Richness measure",
@@ -188,11 +204,14 @@ with st.sidebar:
         swaps_per_edge = st.slider("Attempted swaps per edge", 1, 25, 10)
         min_rich_nodes = st.slider("Minimum rich nodes", 3, 20, 5)
         seed = st.number_input("Random seed", min_value=0, value=42, step=1)
-        st.subheader("Plot Appearance")
+        st.markdown(
+            "### <i class='fa-solid fa-palette section-icon'></i>Plot Appearance",
+            unsafe_allow_html=True,
+        )
         row_observed_label, row_observed_picker = st.columns([3, 2], vertical_alignment="center")
-        row_observed_label.markdown("Observed and rho")
+        row_observed_label.markdown("Observed and \u03c1")
         observed_color = row_observed_picker.color_picker(
-            "Observed and rho color",
+            "Observed and \u03c1 color",
             "#1F6F78",
             key="observed_color_picker",
             label_visibility="collapsed",
@@ -366,7 +385,10 @@ with tab_results:
 with tab_membership:
     eligible = result.table.loc[result.table["reliable_node_count"], "threshold"].tolist()
     if eligible:
-        st.subheader("Membership and edge roles")
+        st.markdown(
+            "### <i class='fa-solid fa-diagram-project section-icon'></i>Membership and edge roles",
+            unsafe_allow_html=True,
+        )
         threshold = st.selectbox(
             "Inspect threshold", eligible, index=max(0, len(eligible) // 2)
         )
@@ -408,7 +430,10 @@ with tab_membership:
         )
 
 with tab_export:
-    st.subheader("Reproducible export")
+    st.markdown(
+        "### <i class='fa-solid fa-file-export section-icon'></i>Reproducible export",
+        unsafe_allow_html=True,
+    )
     methods = methods_paragraph(result)
     methods_text = st.text_area("Generated Methods text", methods, height=170)
 
