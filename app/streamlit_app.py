@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from io import BytesIO
+from pathlib import Path
 
 import networkx as nx
 import pandas as pd
@@ -20,6 +21,13 @@ from richclub_explorer.reporting import methods_paragraph
 from richclub_explorer.validation import NetworkValidationError, validate_network
 
 st.set_page_config(page_title="RichClub Explorer", page_icon="🔬", layout="wide")
+logo_path = Path(__file__).resolve().parents[1] / "assets" / "node_diagram.png"
+
+header_logo_col, _ = st.columns([1, 8])
+with header_logo_col:
+    if logo_path.exists():
+        st.image(str(logo_path), width=120)
+
 st.title("RichClub Explorer")
 st.caption(
     "Reproducible detection, characterization, and reporting of rich-club organization "
