@@ -33,6 +33,74 @@ st.caption(
     "in scientific networks."
 )
 
+st.markdown(
+    """
+    <style>
+    .stTabs [data-baseweb="tab-list"],
+    .stTabs div[role="tablist"] {
+        gap: 0.4rem !important;
+        border-bottom: 2px solid #cbd5e1 !important;
+        padding-bottom: 0 !important;
+    }
+    .stTabs [data-baseweb="tab"],
+    .stTabs button[role="tab"] {
+        position: relative !important;
+        top: 2px !important;
+        height: auto !important;
+        font-size: 1.08rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.01em !important;
+        line-height: 1.2 !important;
+        padding: 0.64rem 1.1rem 0.6rem 1.1rem !important;
+        border: 2px solid #cbd5e1 !important;
+        border-bottom: 0 !important;
+        border-radius: 0.7rem 0.7rem 0 0 !important;
+        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%) !important;
+        color: #1f2937 !important;
+        box-shadow: none !important;
+        transition: background 120ms ease, color 120ms ease, border-color 120ms ease !important;
+    }
+    .stTabs [data-baseweb="tab"] p,
+    .stTabs button[role="tab"] p {
+        font-size: 1.08rem !important;
+        font-weight: 800 !important;
+        margin: 0 !important;
+    }
+    .stTabs [data-baseweb="tab"]:hover,
+    .stTabs button[role="tab"]:hover {
+        background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%) !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+    }
+    .stTabs [data-baseweb="tab"][aria-selected="true"],
+    .stTabs button[role="tab"][aria-selected="true"] {
+        top: 1px !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #94a3b8 !important;
+        border-bottom: 2px solid #ffffff !important;
+        box-shadow: 0 -1px 0 #ffffff, 0 2px 8px rgba(15, 23, 42, 0.08) !important;
+    }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] p,
+    .stTabs button[role="tab"][aria-selected="true"] p {
+        color: #0f172a !important;
+    }
+    .stTabs [data-baseweb="tab-panel"] {
+        border: 2px solid #cbd5e1 !important;
+        border-top: 0 !important;
+        border-radius: 0 0.65rem 0.65rem 0.65rem !important;
+        padding: 1rem 0.85rem 0.75rem 0.85rem !important;
+        background: #ffffff !important;
+        margin-top: -2px !important;
+    }
+    .stTabs [data-baseweb="tab-highlight"] {
+        height: 0 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 def example_graph() -> nx.Graph:
     graph = nx.karate_club_graph()
