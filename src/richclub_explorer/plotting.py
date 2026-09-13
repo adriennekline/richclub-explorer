@@ -15,7 +15,7 @@ def plot_result(result: RichClubResult) -> Figure:
     table = result.table
     x = table["threshold"].to_numpy()
     reliable = table["reliable_node_count"].to_numpy(dtype=bool)
-    figure, axes = plt.subplots(2, 1, figsize=(5.0, 3.8), sharex=True, constrained_layout=True)
+    figure, axes = plt.subplots(1, 2, figsize=(8.0, 3.4), constrained_layout=True)
 
     axes[0].fill_between(
         x,
@@ -27,6 +27,7 @@ def plot_result(result: RichClubResult) -> Figure:
     )
     axes[0].plot(x, table["phi_null_mean"], color="#6B5B95", label="Null mean")
     axes[0].plot(x, table["phi_observed"], color="#1F6F78", linewidth=2.2, label="Observed")
+    axes[0].set_xlabel(f"{str(result.parameters['richness']).capitalize()} threshold")
     axes[0].set_ylabel("Rich-club coefficient")
     axes[0].legend(frameon=False)
 
