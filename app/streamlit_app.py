@@ -38,66 +38,66 @@ st.markdown(
     <style>
     .stTabs [data-baseweb="tab-list"],
     .stTabs div[role="tablist"] {
-        gap: 0.9rem !important;
-        background: #0b1324 !important;
-        border-bottom: 2px solid #1f2a44 !important;
-        padding: 0.6rem 0.75rem 0.55rem 0.75rem !important;
-        border-radius: 0.8rem 0.8rem 0 0 !important;
+        gap: 0.45rem !important;
+        background: transparent !important;
+        border-bottom: 2px solid #d4d4d8 !important;
+        padding: 0.2rem 0 0 0 !important;
+        border-radius: 0 !important;
     }
     .stTabs [data-baseweb="tab"],
     .stTabs button[role="tab"] {
         position: relative !important;
+        top: 1px !important;
         height: auto !important;
-        font-size: 1.06rem !important;
+        font-size: 1.04rem !important;
         font-weight: 700 !important;
         line-height: 1.2 !important;
-        padding: 0.9rem 1.2rem 0.85rem 1.2rem !important;
-        border: 1px solid transparent !important;
+        padding: 0.62rem 1rem 0.58rem 1rem !important;
+        border: 1px solid #d4d4d8 !important;
         border-bottom: 0 !important;
-        border-radius: 0.85rem 0.85rem 0 0 !important;
-        background: transparent !important;
-        color: #9aa7bf !important;
+        border-radius: 0.62rem 0.62rem 0 0 !important;
+        background: #f8fafc !important;
+        color: #374151 !important;
+        opacity: 1 !important;
         box-shadow: none !important;
         transition: background 140ms ease, color 140ms ease, border-color 140ms ease !important;
     }
     .stTabs [data-baseweb="tab"] p,
     .stTabs button[role="tab"] p {
-        font-size: 1.06rem !important;
+        font-size: 1.04rem !important;
         font-weight: 700 !important;
+        color: #374151 !important;
+        opacity: 1 !important;
         margin: 0 !important;
     }
     .stTabs [data-baseweb="tab"]:hover,
     .stTabs button[role="tab"]:hover {
-        color: #d8e1f0 !important;
-        background: rgba(43, 57, 87, 0.48) !important;
+        color: #111827 !important;
+        background: #f1f5f9 !important;
+        border-color: #a1a1aa !important;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"],
     .stTabs button[role="tab"][aria-selected="true"] {
-        background: #25324a !important;
-        color: #31d4cd !important;
-        border-color: #25324a !important;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+        background: #6d28d9 !important;
+        color: #ffffff !important;
+        opacity: 1 !important;
+        border-color: #6d28d9 !important;
+        box-shadow: 0 2px 8px rgba(109, 40, 217, 0.28) !important;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"] p,
     .stTabs button[role="tab"][aria-selected="true"] p {
-        color: #31d4cd !important;
+        color: #ffffff !important;
+        opacity: 1 !important;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"]::after,
     .stTabs button[role="tab"][aria-selected="true"]::after {
-        content: "" !important;
-        position: absolute !important;
-        left: 0.8rem !important;
-        right: 0.8rem !important;
-        bottom: -0.62rem !important;
-        height: 3px !important;
-        border-radius: 999px !important;
-        background: #31d4cd !important;
+        content: none !important;
     }
     .stTabs [data-baseweb="tab-panel"] {
-        border: 1px solid #dbe2ea !important;
+        border: 1px solid #e5e7eb !important;
         border-top: 0 !important;
-        border-radius: 0 0 0.7rem 0.7rem !important;
-        padding: 1.05rem 0.95rem 0.85rem 0.95rem !important;
+        border-radius: 0 0.65rem 0.65rem 0.65rem !important;
+        padding: 1rem 0.9rem 0.8rem 0.9rem !important;
         background: #ffffff !important;
     }
     .stTabs [data-baseweb="tab-highlight"] {
