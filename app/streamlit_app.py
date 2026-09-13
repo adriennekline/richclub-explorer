@@ -20,8 +20,9 @@ from richclub_explorer.plotting import plot_result
 from richclub_explorer.reporting import methods_paragraph
 from richclub_explorer.validation import NetworkValidationError, validate_network
 
-st.set_page_config(page_title="RichClub Explorer", page_icon="🔬", layout="wide")
 logo_path = Path(__file__).resolve().parents[1] / "assets" / "node_diagram.png"
+page_icon = str(logo_path) if logo_path.exists() else "🔬"
+st.set_page_config(page_title="RichClub Explorer", page_icon=page_icon, layout="wide")
 
 header_logo_col, _ = st.columns([1, 8])
 with header_logo_col:
