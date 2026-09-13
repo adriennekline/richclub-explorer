@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import json
+from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
+from typing import Any
 
 import networkx as nx
 import pandas as pd
@@ -43,42 +46,71 @@ def read_uploaded_graph(uploaded_file, table_format: str, weighted: bool) -> nx.
     return load_adjacency_matrix(raw, weighted=weighted)
 
 
+def result_figure_svg(figure) -> bytes:
+    image_buffer = BytesIO()
+    figure.savefig(image_buffer, format="svg", bbox_inches="tight")
+    return image_buffer.getvalue()
+
+
+def to_csv_string(frame: pd.DataFrame) -> str:
+    return frame.to_csv(index=False)
+
+
+def settings_json(data: dict[str, Any]) -> str:
+    return json.dumps(data, indent=2, sort_keys=True)
+
+
 with st.sidebar:
     if logo_path.exists():
         st.image(str(logo_path), width=120)
-    st.header("1. Network")
-    data_source = st.radio("Data source", ["Example network", "Upload CSV/TSV"])
-    table_format = st.selectbox("Uploaded format", ["Edge list", "Adjacency matrix"])
-    uploaded = None
-    if data_source == "Upload CSV/TSV":
-        uploaded = st.file_uploader("Choose a network table", type=["csv", "tsv", "txt"])
-        st.caption("Edge lists require `source` and `target`; `weight` is optional.")
+    with st.form("analysis_controls"):
+        st.header("1. Network")
+        data_source = st.radio("Data source", ["Example network", "Upload CSV/TSV"])
+        table_format = st.selectbox("Uploaded format", ["Edge list", "Adjacency matrix"])
+        uploaded = None
+        if data_source == "Upload CSV/TSV":
+            uploaded = st.file_uploader("Choose a network table", type=["csv", "tsv", "txt"])
+            st.caption("Edge lists require `source` and `target`; `weight` is optional.")
 
-    st.header("2. Analysis")
-    weighted = st.checkbox("Weighted analysis", value=False)
-    richness = st.selectbox(
-        "Richness measure",
-        ["degree", "strength"] if weighted else ["degree"],
-    )
-    n_random = st.select_slider(
-        "Null networks",
-        options=[10, 25, 50, 100, 250, 500, 1000],
-        value=100,
-        help="Use 1,000 for final inference; smaller ensembles are useful for exploration.",
-    )
-    swaps_per_edge = st.slider("Attempted swaps per edge", 1, 25, 10)
-    min_rich_nodes = st.slider("Minimum rich nodes", 3, 20, 5)
-    seed = st.number_input("Random seed", min_value=0, value=42, step=1)
-    run = st.button("Run rich-club analysis", type="primary", width="stretch")
+        st.header("2. Analysis")
+        weighted = st.checkbox("Weighted analysis", value=False)
+        richness = st.selectbox(
+            "Richness measure",
+            ["degree", "strength"] if weighted else ["degree"],
+        )
+        n_random = st.select_slider(
+            "Null networks",
+            options=[10, 25, 50, 100, 250, 500, 1000],
+            value=100,
+            help="Use 1,000 for final inference; smaller ensembles are useful for exploration.",
+        )
+        swaps_per_edge = st.slider("Attempted swaps per edge", 1, 25, 10)
+        min_rich_nodes = st.slider("Minimum rich nodes", 3, 20, 5)
+        seed = st.number_input("Random seed", min_value=0, value=42, step=1)
+
+        run_disabled = data_source == "Upload CSV/TSV" and uploaded is None
+        if run_disabled:
+            st.caption("Upload a file to enable analysis.")
+
+        run = st.form_submit_button(
+            "Run rich-club analysis",
+            type="primary",
+            width="stretch",
+            disabled=run_disabled,
+        )
+        reset = st.form_submit_button("Clear current results", width="stretch")
+
+if reset:
+    st.session_state.pop("analysis_graph", None)
+    st.session_state.pop("analysis_result", None)
+    st.session_state.pop("analysis_context", None)
+    st.rerun()
 
 
 if run:
     try:
         if data_source == "Example network":
             graph = example_graph()
-        elif uploaded is None:
-            st.warning("Upload a network table before running the analysis.")
-            st.stop()
         else:
             graph = read_uploaded_graph(uploaded, table_format, weighted)
 
@@ -94,8 +126,26 @@ if run:
             )
         st.session_state["analysis_graph"] = graph
         st.session_state["analysis_result"] = result
+        st.session_state["analysis_context"] = {
+            "run_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "data_source": data_source,
+            "uploaded_file": uploaded.name if uploaded is not None else None,
+            "uploaded_format": table_format if uploaded is not None else None,
+            "settings": {
+                "weighted": weighted,
+                "richness": richness,
+                "n_random": n_random,
+                "swaps_per_edge": swaps_per_edge,
+                "min_rich_nodes": min_rich_nodes,
+                "seed": int(seed),
+            },
+        }
     except (ValueError, NetworkValidationError) as exc:
         st.error(str(exc))
+    except Exception as exc:  # noqa: BLE001
+        st.error("Unexpected analysis failure. Check your input format and try again.")
+        with st.expander("Technical details"):
+            st.exception(exc)
 
 
 if "analysis_result" not in st.session_state:
@@ -116,92 +166,130 @@ if "analysis_result" not in st.session_state:
 
 result = st.session_state["analysis_result"]
 graph = st.session_state["analysis_graph"]
+context = st.session_state.get("analysis_context", {})
 summary = validate_network(graph, weighted=bool(result.parameters["weighted"])).summary
 
-cols = st.columns(5)
-cols[0].metric("Nodes", f"{summary['nodes']:,}")
-cols[1].metric("Edges", f"{summary['edges']:,}")
-cols[2].metric("Density", f"{summary['density']:.3f}")
-cols[3].metric("Components", summary["components"])
-cols[4].metric("Null networks", result.parameters["n_random"])
+source_label = context.get("data_source", "Unknown")
+if source_label == "Upload CSV/TSV" and context.get("uploaded_file"):
+    source_label = f"{source_label} ({context['uploaded_file']})"
 
-for warning in result.warnings:
-    st.warning(warning)
-
-figure = plot_result(result)
-st.pyplot(figure, width="content")
 st.caption(
-    "A normalized coefficient above one is not sufficient by itself. Interpret it with "
-    "the null distribution, retained node count, threshold dependence, and domain context."
+    f"Last run (UTC): {context.get('run_at_utc', 'unknown')} · Source: {source_label}"
 )
 
-st.subheader("Threshold-level results")
-st.dataframe(result.table, width="stretch", hide_index=True)
+tab_results, tab_membership, tab_export = st.tabs(
+    ["Results", "Membership & Roles", "Reproducible Export"]
+)
 
-eligible = result.table.loc[result.table["reliable_node_count"], "threshold"].tolist()
-if eligible:
-    st.subheader("Membership and edge roles")
-    threshold = st.selectbox("Inspect threshold", eligible, index=max(0, len(eligible) // 2))
-    members = rich_nodes(graph, threshold, richness=result.parameters["richness"])
-    degree_weight = "weight" if result.parameters["richness"] == "strength" else None
-    node_table = pd.DataFrame(
-        [
-            {
-                "node": node,
-                "richness": float(graph.degree(node, weight=degree_weight)),
-                "rich_club_member": node in members,
-            }
-            for node in graph.nodes
-        ]
-    ).sort_values(["rich_club_member", "richness"], ascending=[False, False])
-    edge_table = classify_edges(graph, threshold, richness=result.parameters["richness"])
-    left, right = st.columns(2)
-    left.dataframe(node_table, width="stretch", hide_index=True)
-    right.dataframe(edge_table, width="stretch", hide_index=True)
+with tab_results:
+    cols = st.columns(5)
+    cols[0].metric("Nodes", f"{summary['nodes']:,}")
+    cols[1].metric("Edges", f"{summary['edges']:,}")
+    cols[2].metric("Density", f"{summary['density']:.3f}")
+    cols[3].metric("Components", summary["components"])
+    cols[4].metric("Null networks", result.parameters["n_random"])
 
-    left.download_button(
-        "Download node membership CSV",
-        node_table.to_csv(index=False),
-        "richclub_nodes.csv",
+    for warning in result.warnings:
+        st.warning(warning)
+    if summary["components"] > 1:
+        st.info(
+            "This network has multiple connected components. Rich-club interpretation may "
+            "depend on whether disconnected regions are scientifically meaningful."
+        )
+
+    figure = plot_result(result)
+    st.pyplot(figure, width="content")
+    st.caption(
+        "A normalized coefficient above one is not sufficient by itself. Interpret it with "
+        "the null distribution, retained node count, threshold dependence, and domain context."
+    )
+
+    st.subheader("Threshold-level results")
+    st.dataframe(result.table, width="stretch", hide_index=True)
+
+with tab_membership:
+    eligible = result.table.loc[result.table["reliable_node_count"], "threshold"].tolist()
+    if eligible:
+        st.subheader("Membership and edge roles")
+        threshold = st.selectbox(
+            "Inspect threshold", eligible, index=max(0, len(eligible) // 2)
+        )
+        members = rich_nodes(graph, threshold, richness=result.parameters["richness"])
+        degree_weight = "weight" if result.parameters["richness"] == "strength" else None
+        node_table = pd.DataFrame(
+            [
+                {
+                    "node": node,
+                    "richness": float(graph.degree(node, weight=degree_weight)),
+                    "rich_club_member": node in members,
+                }
+                for node in graph.nodes
+            ]
+        ).sort_values(["rich_club_member", "richness"], ascending=[False, False])
+        edge_table = classify_edges(graph, threshold, richness=result.parameters["richness"])
+        left, right = st.columns(2)
+        left.dataframe(node_table, width="stretch", hide_index=True)
+        right.dataframe(edge_table, width="stretch", hide_index=True)
+
+        left.download_button(
+            "Download node membership CSV",
+            to_csv_string(node_table),
+            "richclub_nodes.csv",
+            "text/csv",
+            width="stretch",
+        )
+        right.download_button(
+            "Download edge classification CSV",
+            to_csv_string(edge_table),
+            "richclub_edges.csv",
+            "text/csv",
+            width="stretch",
+        )
+    else:
+        st.info(
+            "No thresholds met the reliability criterion for membership reporting. "
+            "Try lowering minimum rich nodes or using a denser network."
+        )
+
+with tab_export:
+    st.subheader("Reproducible export")
+    methods = methods_paragraph(result)
+    methods_text = st.text_area("Generated Methods text", methods, height=170)
+
+    export_bundle = {
+        "analysis_parameters": dict(result.parameters),
+        "run_context": context,
+        "network_summary": summary,
+    }
+    download_cols = st.columns(4)
+    download_cols[0].download_button(
+        "Download all thresholds",
+        to_csv_string(result.table),
+        "richclub_results.csv",
         "text/csv",
         width="stretch",
     )
-    right.download_button(
-        "Download edge classification CSV",
-        edge_table.to_csv(index=False),
-        "richclub_edges.csv",
-        "text/csv",
+    download_cols[1].download_button(
+        "Download SVG figure",
+        result_figure_svg(plot_result(result)),
+        "richclub_figure.svg",
+        "image/svg+xml",
         width="stretch",
     )
-
-st.subheader("Reproducible export")
-methods = methods_paragraph(result)
-st.text_area("Generated Methods text", methods, height=170)
-
-image_buffer = BytesIO()
-figure.savefig(image_buffer, format="svg", bbox_inches="tight")
-download_cols = st.columns(3)
-download_cols[0].download_button(
-    "Download all thresholds",
-    result.table.to_csv(index=False),
-    "richclub_results.csv",
-    "text/csv",
-    width="stretch",
-)
-download_cols[1].download_button(
-    "Download SVG figure",
-    image_buffer.getvalue(),
-    "richclub_figure.svg",
-    "image/svg+xml",
-    width="stretch",
-)
-download_cols[2].download_button(
-    "Download Methods text",
-    methods,
-    "richclub_methods.txt",
-    "text/plain",
-    width="stretch",
-)
+    download_cols[2].download_button(
+        "Download Methods text",
+        methods_text,
+        "richclub_methods.txt",
+        "text/plain",
+        width="stretch",
+    )
+    download_cols[3].download_button(
+        "Download settings JSON",
+        settings_json(export_bundle),
+        "richclub_settings.json",
+        "application/json",
+        width="stretch",
+    )
 
 st.divider()
 st.caption(
