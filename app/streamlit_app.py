@@ -38,60 +38,67 @@ st.markdown(
     <style>
     .stTabs [data-baseweb="tab-list"],
     .stTabs div[role="tablist"] {
-        gap: 0.4rem !important;
-        border-bottom: 2px solid #cbd5e1 !important;
-        padding-bottom: 0 !important;
+        gap: 0.9rem !important;
+        background: #0b1324 !important;
+        border-bottom: 2px solid #1f2a44 !important;
+        padding: 0.6rem 0.75rem 0.55rem 0.75rem !important;
+        border-radius: 0.8rem 0.8rem 0 0 !important;
     }
     .stTabs [data-baseweb="tab"],
     .stTabs button[role="tab"] {
         position: relative !important;
-        top: 2px !important;
         height: auto !important;
-        font-size: 1.08rem !important;
-        font-weight: 800 !important;
-        letter-spacing: 0.01em !important;
+        font-size: 1.06rem !important;
+        font-weight: 700 !important;
         line-height: 1.2 !important;
-        padding: 0.64rem 1.1rem 0.6rem 1.1rem !important;
-        border: 2px solid #cbd5e1 !important;
+        padding: 0.9rem 1.2rem 0.85rem 1.2rem !important;
+        border: 1px solid transparent !important;
         border-bottom: 0 !important;
-        border-radius: 0.7rem 0.7rem 0 0 !important;
-        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%) !important;
-        color: #1f2937 !important;
+        border-radius: 0.85rem 0.85rem 0 0 !important;
+        background: transparent !important;
+        color: #9aa7bf !important;
         box-shadow: none !important;
-        transition: background 120ms ease, color 120ms ease, border-color 120ms ease !important;
+        transition: background 140ms ease, color 140ms ease, border-color 140ms ease !important;
     }
     .stTabs [data-baseweb="tab"] p,
     .stTabs button[role="tab"] p {
-        font-size: 1.08rem !important;
-        font-weight: 800 !important;
+        font-size: 1.06rem !important;
+        font-weight: 700 !important;
         margin: 0 !important;
     }
     .stTabs [data-baseweb="tab"]:hover,
     .stTabs button[role="tab"]:hover {
-        background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%) !important;
-        border-color: #94a3b8 !important;
-        color: #0f172a !important;
+        color: #d8e1f0 !important;
+        background: rgba(43, 57, 87, 0.48) !important;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"],
     .stTabs button[role="tab"][aria-selected="true"] {
-        top: 1px !important;
-        background: #ffffff !important;
-        color: #0f172a !important;
-        border-color: #94a3b8 !important;
-        border-bottom: 2px solid #ffffff !important;
-        box-shadow: 0 -1px 0 #ffffff, 0 2px 8px rgba(15, 23, 42, 0.08) !important;
+        background: #25324a !important;
+        color: #31d4cd !important;
+        border-color: #25324a !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"] p,
     .stTabs button[role="tab"][aria-selected="true"] p {
-        color: #0f172a !important;
+        color: #31d4cd !important;
+    }
+    .stTabs [data-baseweb="tab"][aria-selected="true"]::after,
+    .stTabs button[role="tab"][aria-selected="true"]::after {
+        content: "" !important;
+        position: absolute !important;
+        left: 0.8rem !important;
+        right: 0.8rem !important;
+        bottom: -0.62rem !important;
+        height: 3px !important;
+        border-radius: 999px !important;
+        background: #31d4cd !important;
     }
     .stTabs [data-baseweb="tab-panel"] {
-        border: 2px solid #cbd5e1 !important;
+        border: 1px solid #dbe2ea !important;
         border-top: 0 !important;
-        border-radius: 0 0.65rem 0.65rem 0.65rem !important;
-        padding: 1rem 0.85rem 0.75rem 0.85rem !important;
+        border-radius: 0 0 0.7rem 0.7rem !important;
+        padding: 1.05rem 0.95rem 0.85rem 0.95rem !important;
         background: #ffffff !important;
-        margin-top: -2px !important;
     }
     .stTabs [data-baseweb="tab-highlight"] {
         height: 0 !important;
