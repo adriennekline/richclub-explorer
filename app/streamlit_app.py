@@ -37,7 +37,8 @@ st.markdown(
     """
     <style>
     .stTabs [data-baseweb="tab-list"],
-    .stTabs div[role="tablist"] {
+    .stTabs div[role="tablist"],
+    div[role="tablist"] {
         gap: 0.45rem !important;
         background: transparent !important;
         border-bottom: 2px solid #d4d4d8 !important;
@@ -45,7 +46,9 @@ st.markdown(
         border-radius: 0 !important;
     }
     .stTabs [data-baseweb="tab"],
-    .stTabs button[role="tab"] {
+    .stTabs button[role="tab"],
+    .stTabs [data-testid="stTab"],
+    [data-testid="stTab"][role="tab"] {
         position: relative !important;
         top: 1px !important;
         height: auto !important;
@@ -63,7 +66,9 @@ st.markdown(
         transition: background 140ms ease, color 140ms ease, border-color 140ms ease !important;
     }
     .stTabs [data-baseweb="tab"] p,
-    .stTabs button[role="tab"] p {
+    .stTabs button[role="tab"] p,
+    .stTabs [data-testid="stTab"] p,
+    [data-testid="stTab"][role="tab"] p {
         font-size: 1.04rem !important;
         font-weight: 700 !important;
         color: #374151 !important;
@@ -71,13 +76,17 @@ st.markdown(
         margin: 0 !important;
     }
     .stTabs [data-baseweb="tab"]:hover,
-    .stTabs button[role="tab"]:hover {
+    .stTabs button[role="tab"]:hover,
+    .stTabs [data-testid="stTab"]:hover,
+    [data-testid="stTab"][role="tab"]:hover {
         color: #111827 !important;
         background: #f1f5f9 !important;
         border-color: #a1a1aa !important;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"],
-    .stTabs button[role="tab"][aria-selected="true"] {
+    .stTabs button[role="tab"][aria-selected="true"],
+    .stTabs [data-testid="stTab"][aria-selected="true"],
+    [data-testid="stTab"][role="tab"][aria-selected="true"] {
         background: #6d28d9 !important;
         color: #ffffff !important;
         opacity: 1 !important;
@@ -85,7 +94,9 @@ st.markdown(
         box-shadow: 0 2px 8px rgba(109, 40, 217, 0.28) !important;
     }
     .stTabs [data-baseweb="tab"][aria-selected="true"] p,
-    .stTabs button[role="tab"][aria-selected="true"] p {
+    .stTabs button[role="tab"][aria-selected="true"] p,
+    .stTabs [data-testid="stTab"][aria-selected="true"] p,
+    [data-testid="stTab"][role="tab"][aria-selected="true"] p {
         color: #ffffff !important;
         opacity: 1 !important;
     }
