@@ -21,6 +21,7 @@ from richclub_explorer import (
     load_edge_list,
     rich_nodes,
 )
+from richclub_explorer.target_discovery import rank_upstream_regulators
 from richclub_explorer.plotting import plot_result
 from richclub_explorer.reporting import methods_paragraph
 from richclub_explorer.validation import NetworkValidationError, validate_network
@@ -520,13 +521,14 @@ st.caption(
     f"Last run (UTC): {context.get('run_at_utc', 'unknown')} · Source: {source_label}"
 )
 
-tab_results, tab_membership, tab_graph_nodes, tab_network, tab_export = st.tabs(
+tab_results, tab_membership, tab_graph_nodes, tab_network, tab_export, tab_biology = st.tabs(
     [
         "Results",
         "Membership & Roles",
         "Graph Nodes",
         "Network Visualization",
         "Reproducible Export",
+        "Biological Interpretation",
     ]
 )
 
@@ -774,3 +776,66 @@ st.caption(
     "RichClub Explorer v0.1.0 · Research software in beta · Results require scientific "
     "interpretation and sensitivity analysis."
 )
+
+
+# This optional module never modifies the original network or its rich-club inference.
+with tab_biology:
+    st.subheader("Biological interpretation: upstream regulators")
+    st.info(
+        "Exploratory hypothesis generation, not clinical target validation. "
+        "Upload signed, directed evidence; undirected STRING/co-expression edges "
+        "cannot be treated as causal regulatory relationships."
+    )
+    st.caption(
+        "Relationships CSV columns: regulator,target,effect (1 activation, -1 inhibition, "
+        "0 unknown); optional confidence (0–1). "
+        "Expression CSV: gene,log2_fold_change (disease versus control). "
+        "Gene identifiers must match exactly, including organism and capitalization."
+    )
+    biological_thresholds = result.table.loc[
+        result.table["reliable_node_count"], "threshold"
+    ].tolist()
+    if not biological_thresholds:
+        st.warning("No reliable rich-club threshold is available for interpretation.")
+    else:
+        biological_threshold = st.selectbox(
+            "Rich-club threshold for biological interpretation",
+            biological_thresholds, key="biology_threshold",
+        )
+        biological_genes = sorted(
+            str(gene) for gene in rich_nodes(
+                graph, biological_threshold, richness=result.parameters["richness"]
+            )
+        )
+        st.write(f"{len(biological_genes)} rich-club nodes selected.")
+        with st.expander("View selected gene identifiers"):
+            st.write(", ".join(biological_genes))
+        relationships_upload = st.file_uploader(
+            "Signed, directed regulator–target CSV", type=["csv"], key="regulator_csv"
+        )
+        expression_upload = st.file_uploader(
+            "Optional expression CSV", type=["csv"], key="expression_csv"
+        )
+        if relationships_upload is not None:
+            try:
+                relations = pd.read_csv(relationships_upload)
+                expr = pd.read_csv(expression_upload) if expression_upload else None
+                target_ranks = rank_upstream_regulators(biological_genes, relations, expr)
+                if target_ranks.empty:
+                    st.warning("No regulator targets matched the rich-club identifiers.")
+                else:
+                    st.dataframe(target_ranks, width="stretch", hide_index=True)
+                    st.download_button(
+                        "Download upstream regulator rankings",
+                        target_ranks.to_csv(index=False),
+                        file_name="richclub_upstream_regulators.csv",
+                        mime="text/csv",
+                        key="biology_export",
+                    )
+                    st.caption(
+                        "Scores are descriptive heuristics weighted by coverage (55%), "
+                        "predicted reversal (30%) when supported, and evidence confidence "
+                        "(15%). Missing reversal evidence is not scored as a negative result."
+                    )
+            except (ValueError, pd.errors.ParserError) as exc:
+                st.error(f"Unable to rank regulators: {exc}")
